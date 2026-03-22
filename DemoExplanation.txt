@@ -1,0 +1,126 @@
+
+DEMO EXPLANATION – COS332 PRACTICAL 4
+
+⸻
+
+PERSON A (FRONTEND DEMO)
+
+Introduction:
+I worked on the frontend side of the application, which allows users to interact with the server using a standard web browser.
+
+Step 1 – Search (GET request):
+Open: http://localhost:8080/?action=search
+
+This sends a GET request to the server. The server processes the request and returns a dynamically generated HTML page displaying all stored appointments.
+
+Step 2 – Add Appointment (POST request):
+Using a form (or explaining POST if no form is shown), enter:
+Time: 10
+Description: Meeting
+
+This sends a POST request to the server with the data in the request body.
+
+Step 3 – Verify Add:
+Refresh or open: http://localhost:8080/?action=search
+
+The new appointment appears, showing that the server successfully stored the data in memory.
+
+Step 4 – Delete Appointment:
+Open: http://localhost:8080/?action=delete&time=10
+
+This sends a GET request with query parameters to delete an appointment.
+
+Step 5 – Verify Delete:
+Open search again:
+http://localhost:8080/?action=search
+
+The appointment is no longer present.
+
+Step 6 – Image Feature (Bonus):
+Open: http://localhost:8080/image
+
+This shows that the server can send binary data (an image) using HTTP, not just HTML.
+
+Closing:
+All interactions are done through the browser, with no direct interaction with the server after it starts, as required.
+
+⸻
+
+PERSON B (BACKEND DEMO)
+
+Introduction:
+I implemented the backend server using Java sockets, manually handling the HTTP protocol without using any built-in web frameworks.
+
+Step 1 – Server Setup:
+The server uses a ServerSocket to listen for connections on port 8080. When a client connects, it accepts the connection and reads the request.
+
+Step 2 – Request Parsing:
+The server reads the raw HTTP request and parses:
+	•	The request line (method, path, version)
+	•	Headers
+	•	Query parameters from the URL
+	•	POST body parameters using Content-Length
+
+Step 3 – HTTP Methods:
+The server supports multiple HTTP methods:
+	•	GET for searching and deleting
+	•	POST for adding appointments
+
+This demonstrates understanding of how HTTP methods are used differently.
+
+Step 4 – Data Storage:
+Appointments are stored in memory using an ArrayList and a custom Appointment class.
+
+Step 5 – Core Functionality:
+Based on the request:
+	•	Add creates a new appointment
+	•	Search retrieves stored appointments (with optional filters)
+	•	Delete removes matching appointments
+
+Step 6 – HTTP Response Construction:
+The server manually builds HTTP responses including:
+	•	Status line (e.g. 200 OK)
+	•	Headers (Content-Type, Content-Length, Connection)
+	•	Body (HTML or binary image data)
+
+Step 7 – Status Codes:
+The server uses appropriate HTTP status codes:
+	•	200 OK for successful requests
+	•	400 Bad Request for missing or invalid parameters
+	•	404 Not Found for invalid routes
+	•	405 Method Not Allowed for unsupported methods
+
+Step 8 – Image Handling (Bonus):
+The server can serve an image at the /image route by:
+	•	Reading the file from disk
+	•	Sending it with Content-Type: image/jpeg
+	•	Writing raw binary data to the response
+
+Closing:
+This demonstrates full manual handling of the HTTP protocol, including request parsing, response construction, and support for both text and binary data.
+
+⸻
+
+POSSIBLE QUESTIONS AND ANSWERS
+
+Q: Why did you use sockets instead of a framework?
+A: The assignment requires manual implementation of the HTTP protocol to demonstrate understanding of how communication works at a low level.
+
+Q: How do you handle POST requests?
+A: The server reads the Content-Length header and then reads the request body from the socket, parsing it into parameters.
+
+Q: Why use GET for search and delete?
+A: GET is used for retrieving data, and delete is triggered via query parameters. POST is used for adding because it sends data in the request body.
+
+Q: Where is the data stored?
+A: In memory using an ArrayList of Appointment objects.
+
+Q: What happens if parameters are missing?
+A: The server uses validation and default values, and may return a 400 Bad Request if required parameters are missing.
+
+Q: How does the image feature work?
+A: The server reads a JPEG file and sends it as raw bytes with the correct Content-Type and Content-Length headers.
+
+Q: Does your server handle multiple users?
+A: Currently it is single-threaded, but it can be extended to support concurrency using threads.
+
